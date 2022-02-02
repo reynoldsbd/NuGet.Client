@@ -67,6 +67,12 @@
 
   <Target Name="GetSemanticVersion">
     <Message Text="$(SemanticVersion)" Importance="High"/>
+    <Message Text="##vso[task.setvariable variable=SemanticVersion;isOutput=true]$(SemanticVersion)"
+             Importance="High"
+             Condition="'$(SemanticVersion)' != ''" />
+    <Message Text="##vso[task.LogIssue type=error;]Unable to set product version because the SemanticVersion property is not set"
+             Importance="High"
+             Condition="'$(SemanticVersion)' == ''" />
   </Target>
   <Target Name="GetNuGetSdkVsSemanticVersion">
     <Message Text="$(NuGetSdkVsSemanticVersion)" Importance="High"/>
