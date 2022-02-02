@@ -48,20 +48,9 @@ variables:
 stages:
 - stage: Initialize
   jobs:
-  - job: GetSemanticVersion
-    displayName: Get NuGet.Client semantic version
-    timeoutInMinutes: 10
-    pool:
-      vmImage: windows-latest
-    steps:
-    - template: Initialize_Build_SemanticVersion.yml
-
-  - job: Initialize_Build
-    dependsOn: GetSemanticVersion
-    timeoutInMinutes: 10
-    variables:
-      SemanticVersion: $[dependencies.GetSemanticVersion.outputs['SetSemanticVersion.SemanticVersion']]
-      BuildRevision: $[counter(format('{0}.{1}', variables['SemanticVersion'], variables['build.definitionname']), 1)]
+  - job: InitializeBuild
+    displayName: "Initialize Build"
+    timeoutInMinutes: 15
     pool:
       vmImage: windows-latest
     steps:

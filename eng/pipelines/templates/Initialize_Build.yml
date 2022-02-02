@@ -1,4 +1,17 @@
 steps:
+- task: PublishPipelineArtifact@1
+  displayName: "Save build YAML"
+  inputs:
+    artifactName: yaml
+    targetPath: "$(Build.Repository.LocalPath)\\eng\\pipelines"
+
+- task: MSBuild@1
+  displayName: "Set Build Version"
+  name: "SetBuildVersion"
+  inputs:
+    solution: "build\\config.props"
+    msbuildArguments: /nologo /ConsoleLoggerParameters:Verbosity=Minimal;ForceNoAlign;NoSummary /Target:GetBuildVersion "/p:BuildRevision=$[counter(variables['build.definitionname'], 1)]"
+
 - task: PowerShell@1
   displayName: "Check VSTS Personal Access Token"
   inputs:

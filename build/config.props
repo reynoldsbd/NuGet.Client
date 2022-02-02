@@ -65,14 +65,17 @@
     <MS_PFX_PATH>$(MSBuildThisFileDirectory)..\keys\35MSSharedLib1024.snk</MS_PFX_PATH>
   </PropertyGroup>
 
-  <Target Name="GetSemanticVersion">
-    <Message Text="$(SemanticVersion)" Importance="High"/>
+  <Target Name="GetBuildVersion">
+    <Message Text="$(SemanticVersion)" Importance="High" />
     <Message Text="##vso[task.setvariable variable=SemanticVersion;isOutput=true]$(SemanticVersion)"
              Importance="High"
              Condition="'$(SemanticVersion)' != ''" />
     <Message Text="##vso[task.LogIssue type=error;]Unable to set product version because the SemanticVersion property is not set"
              Importance="High"
              Condition="'$(SemanticVersion)' == ''" />
+    <Message Text="##vso[task.setvariable variable=BuildRevision;isOutput=true]$(BuildRevision)"
+             Importance="High"
+             Condition="'$(BuildRevision)' != ''" />
   </Target>
   <Target Name="GetNuGetSdkVsSemanticVersion">
     <Message Text="$(NuGetSdkVsSemanticVersion)" Importance="High"/>
