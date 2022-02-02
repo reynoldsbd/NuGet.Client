@@ -51,6 +51,8 @@ stages:
   - job: InitializeBuild
     displayName: "Initialize Build"
     timeoutInMinutes: 15
+    variables:
+      BuildRevision: $[counter(variables['build.definitionname'], 1)]
     pool:
       vmImage: windows-latest
     steps:

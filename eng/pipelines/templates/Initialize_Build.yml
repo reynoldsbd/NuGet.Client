@@ -10,7 +10,7 @@ steps:
   name: "SetBuildVersion"
   inputs:
     solution: "build\\config.props"
-    msbuildArguments: /nologo /ConsoleLoggerParameters:Verbosity=Minimal;ForceNoAlign;NoSummary /Target:GetBuildVersion "/p:BuildRevision=$[counter(variables['build.definitionname'], 1)]"
+    msbuildArguments: "/nologo /ConsoleLoggerParameters:Verbosity=Minimal;ForceNoAlign;NoSummary /Target:GetBuildVersion"
 
 - task: PowerShell@1
   displayName: "Check VSTS Personal Access Token"
@@ -35,7 +35,6 @@ steps:
   inputs:
     scriptType: "inlineScript"
     inlineScript: |
-      try {
         $FullBuildNumber = "$(SemanticVersion).$(BuildRevision)"
         if ([System.String]::IsNullOrEmpty($env:VsTargetChannelOverride) -eq $false) {
           $targetChannel = $env:VsTargetChannelOverride
@@ -50,10 +49,6 @@ steps:
         Write-Host "##vso[build.updatebuildnumber]$FullBuildNumber"
         Write-Host "##vso[task.setvariable variable=BuildNumber;isOutput=true]$(BuildRevision)"
         Write-Host "##vso[task.setvariable variable=FullVstsBuildNumber;isOutput=true]$FullBuildNumber"
-      } catch {
-        Write-Host "##vso[task.LogIssue type=error;]Unable to set build number"
-        exit 1
-      }
 
 - task: PowerShell@1
   displayName: "Add Build Tags"
