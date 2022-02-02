@@ -7,6 +7,7 @@ steps:
 
 - task: MSBuild@1
   displayName: "Set Semantic Version"
+  name: "SetSemanticVersion"
   inputs:
     solution: "build\\config.props"
     msbuildArguments: "/nologo /ConsoleLoggerParameters:Verbosity=Minimal;ForceNoAlign;NoSummary /Target:GetSemanticVersion"
