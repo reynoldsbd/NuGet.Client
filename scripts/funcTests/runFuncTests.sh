@@ -146,17 +146,6 @@ if [ $? -ne 0 ]; then
 	RESULTCODE=1
 fi
 
-RESULTFILE="build/TestResults/TestResults.xml"
-
-echo "Checking if result file exists at $DIR/$RESULTFILE"
-if [ -f  "$DIR/$RESULTFILE" ]
-then
-	echo "Renaming $DIR/$RESULTFILE"
-	mv "$RESULTFILE" "$DIR/build/TestResults/TestResults.$(date +%H%M%S).xml"
-else
-	echo "$DIR/$RESULTFILE not found."
-fi
-
 echo "Core tests finished at `date -u +"%Y-%m-%dT%H:%M:%S"`"
 
 # Func tests
@@ -166,15 +155,6 @@ dotnet msbuild build/build.proj /t:CoreFuncTests /p:VisualStudioVersion=16.0 /p:
 if [ $? -ne 0 ]; then
 	RESULTCODE='1'
 	echo "CoreFuncTests failed!!"
-fi
-
-echo "Checking if result file exists at $DIR/$RESULTFILE"
-if [ -f  "$DIR/$RESULTFILE" ]
-then
-	echo "Renaming $DIR/$RESULTFILE"
-	mv "$RESULTFILE" "$DIR/build/TestResults/TestResults.$(date +%H%M%S).xml"
-else
-	echo "$DIR/$RESULTFILE not found."
 fi
 
 if [ -z "$CI" ]; then

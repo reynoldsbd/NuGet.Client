@@ -3,5 +3,6 @@
   "methodDisplay": "classAndMethod",
   "parallelizeAssembly": true,
   "parallelizeTestCollections": true,
-  "longRunningTestSeconds": 120
+  "longRunningTestSeconds": 120,
+  "preEnumerateTheories": false
 }
