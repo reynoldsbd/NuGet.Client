@@ -292,7 +292,8 @@ namespace NuGet.PackageManagement.UI
                     Sources = _packageSources,
                     PackagePath = metadata.PackagePath,
                     PackageFileService = _packageFileService,
-                    IncludePrerelease = _includePrerelease
+                    IncludePrerelease = _includePrerelease,
+                    DeprecationMetadata = metadata.DeprecationMetadataContextInfo
                 };
 
                 listItem.UpdatePackageStatus(_installedPackages);
@@ -301,27 +302,6 @@ namespace NuGet.PackageManagement.UI
             }
 
             return listItemViewModels.ToArray();
-        }
-
-        private async Task<PackageDeprecationMetadataContextInfo> GetDeprecationMetadataAsync(PackageIdentity identity)
-        {
-            Assumes.NotNull(identity);
-
-            return await _searchService.GetDeprecationMetadataAsync(identity, _packageSources, _includePrerelease, CancellationToken.None);
-        }
-
-        private async Task<IReadOnlyCollection<VersionInfoContextInfo>> GetVersionInfoAsync(PackageIdentity identity)
-        {
-            Assumes.NotNull(identity);
-
-            return await _searchService.GetPackageVersionsAsync(identity, _packageSources, _includePrerelease, CancellationToken.None);
-        }
-
-        private async Task<(PackageSearchMetadataContextInfo, PackageDeprecationMetadataContextInfo)> GetDetailedPackageSearchMetadataContextInfoAsync(PackageIdentity identity)
-        {
-            Assumes.NotNull(identity);
-
-            return await _searchService.GetPackageMetadataAsync(identity, _packageSources, _includePrerelease, CancellationToken.None);
         }
 
         public void Dispose()

@@ -1,1 +1,2 @@
 #nullable enable
+NuGet.VisualStudio.Internal.Contracts.PackageSearchMetadataContextInfo.DeprecationMetadataContextInfo.get -> NuGet.VisualStudio.Internal.Contracts.PackageDeprecationMetadataContextInfo?

@@ -865,7 +865,7 @@ namespace NuGet.PackageManagement.UI
                 _loadCts = new CancellationTokenSource();
 
                 // start SearchAsync task for initial loading of packages
-                var searchResultTask = loader.SearchAsync(cancellationToken: _loadCts.Token);
+                Task<SearchResultContextInfo> searchResultTask = loader.SearchAsync(cancellationToken: _loadCts.Token);
                 // this will wait for searchResultTask to complete instead of creating a new task
                 await _packageList.LoadItemsAsync(loader, loadingMessage, _uiLogger, searchResultTask, _loadCts.Token);
 
@@ -916,6 +916,10 @@ namespace NuGet.PackageManagement.UI
             }
         }
 
+        /// <summary>
+        /// Occurs after loading a collection of <see cref="PackageItemViewModel"/> and computes various Counts to be reflected in the UI.
+        /// </summary>
+        /// <returns></returns>
         private async ValueTask RefreshInstalledAndUpdatesTabsAsync()
         {
             // clear existing caches
@@ -940,8 +944,10 @@ namespace NuGet.PackageManagement.UI
             Interlocked.Exchange(ref _refreshCts, refreshCts)?.Cancel();
 
             // Update installed tab warning icon
-            (int vulnerablePackages, int deprecatedPackages) = await GetInstalledVulnerableAndDeprecatedPackagesCountAsync(loadContext, refreshCts.Token);
-            _topPanel.UpdateWarningStatusOnInstalledTab(vulnerablePackages, deprecatedPackages);
+            //(int vulnerablePackages, int deprecatedPackages) = await GetInstalledVulnerableAndDeprecatedPackagesCountAsync(loadContext, refreshCts.Token);
+            int vulnerablePackagesCount = PackageList.PackageItems.Count(vm => vm.IsPackageVulnerable);
+            int deprecatedPackagesCount = PackageList.PackageItems.Count(vm => vm.IsPackageDeprecated);
+            _topPanel.UpdateWarningStatusOnInstalledTab(vulnerablePackagesCount, deprecatedPackagesCount);
 
             // Update updates tab count
             Model.CachedUpdates = new PackageSearchMetadataCache
@@ -954,32 +960,32 @@ namespace NuGet.PackageManagement.UI
             _topPanel.UpdateCountOnUpdatesTab(Model.CachedUpdates.Packages.Count);
         }
 
-        private async Task<(int, int)> GetInstalledVulnerableAndDeprecatedPackagesCountAsync(PackageLoadContext loadContext, CancellationToken token)
-        {
-            // Switch off the UI thread before fetching installed packages and deprecation metadata.
-            await TaskScheduler.Default;
+        //private async Task<(int, int)> GetInstalledVulnerableAndDeprecatedPackagesCountAsync(PackageLoadContext loadContext, CancellationToken token)
+        //{
+        //    // Switch off the UI thread before fetching installed packages and deprecation metadata.
+        //    await TaskScheduler.Default;
 
-            PackageCollection installedPackages = await loadContext.GetInstalledPackagesAsync();
+        //    PackageCollection installedPackages = await loadContext.GetInstalledPackagesAsync();
 
-            var installedPackageMetadata = await Task.WhenAll(
-                installedPackages.Select(p => GetPackageMetadataAsync(p, token)));
+        //    var installedPackageMetadata = await Task.WhenAll(
+        //        installedPackages.Select(p => GetPackageMetadataAsync(p, token)));
 
-            int vulnerablePackagesCount = 0;
-            int deprecatedPackagesCount = 0;
-            foreach ((PackageSearchMetadataContextInfo s, PackageDeprecationMetadataContextInfo d) in installedPackageMetadata)
-            {
-                if (s.Vulnerabilities != null && s.Vulnerabilities.Any())
-                {
-                    vulnerablePackagesCount++;
-                }
-                if (d != null)
-                {
-                    deprecatedPackagesCount++;
-                }
-            }
+        //    int vulnerablePackagesCount = 0;
+        //    int deprecatedPackagesCount = 0;
+        //    foreach ((PackageSearchMetadataContextInfo s, PackageDeprecationMetadataContextInfo d) in installedPackageMetadata)
+        //    {
+        //        if (s.Vulnerabilities != null && s.Vulnerabilities.Any())
+        //        {
+        //            vulnerablePackagesCount++;
+        //        }
+        //        if (d != null)
+        //        {
+        //            deprecatedPackagesCount++;
+        //        }
+        //    }
 
-            return (vulnerablePackagesCount, deprecatedPackagesCount);
-        }
+        //    return (vulnerablePackagesCount, deprecatedPackagesCount);
+        //}
 
         private async Task<(PackageSearchMetadataContextInfo, PackageDeprecationMetadataContextInfo)> GetPackageMetadataAsync(PackageCollectionItem package, CancellationToken cancellationToken)
         {
