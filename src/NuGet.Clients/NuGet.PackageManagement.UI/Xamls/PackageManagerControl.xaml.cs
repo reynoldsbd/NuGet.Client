@@ -854,7 +854,8 @@ namespace NuGet.PackageManagement.UI
                     (NuGet.VisualStudio.Internal.Contracts.ItemFilter)_topPanel.Filter,
                     searchText: searchText,
                     includePrerelease: IncludePrerelease,
-                    useRecommender: useRecommender);
+                    useRecommender: useRecommender,
+                    logger: _uiLogger);
 
                 var loadingMessage = string.IsNullOrWhiteSpace(searchText)
                     ? Resx.Resources.Text_Loading
@@ -933,7 +934,8 @@ namespace NuGet.PackageManagement.UI
                 SelectedSource.PackageSources,
                 NuGet.VisualStudio.Internal.Contracts.ItemFilter.UpdatesAvailable,
                 includePrerelease: IncludePrerelease,
-                useRecommender: false);
+                useRecommender: false,
+                logger: _uiLogger);
 
             // cancel previous refresh tabs task, if any and start a new one.
             var refreshCts = new CancellationTokenSource();
@@ -1005,7 +1007,8 @@ namespace NuGet.PackageManagement.UI
                     SelectedSource.PackageSources,
                     NuGet.VisualStudio.Internal.Contracts.ItemFilter.Consolidate,
                     includePrerelease: IncludePrerelease,
-                    useRecommender: false);
+                    useRecommender: false,
+                    logger: _uiLogger);
 
                 _topPanel.UpdateCountOnConsolidateTab(await loader.GetTotalCountAsync(maxCount: 100, CancellationToken.None));
             }
